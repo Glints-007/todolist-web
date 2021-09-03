@@ -7,24 +7,17 @@ use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $data = Todo::all();
+        return view('todo.index')->with([
+            'data' => $data
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('todo.create');
     }
 
     /**
@@ -35,7 +28,9 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->except(['_token']);
+        Todo::insert($data);
+        return redirect('/');
     }
 
     /**
@@ -44,9 +39,12 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function show(Todo $todo)
+    public function show($id)
     {
-        //
+        $data = Todo::findOrFail($id);
+        return view('todo.show')->with([
+            'data' => $data
+        ]);
     }
 
     /**
@@ -67,9 +65,12 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Todo $todo)
+    public function update(Request $request, $id)
     {
-        //
+        $item = Todo::findOrFail($id);
+        $data = $request->except(['_token']);
+        $item->update($data);
+        return redirect('/todo');
     }
 
     /**
@@ -78,8 +79,10 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
+    public function delete($id)
     {
-        //
+        $item = Todo::findOrFail($id);
+        $item->delete();
+        return redirect('/todo');
     }
 }
