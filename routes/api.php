@@ -23,4 +23,9 @@ Route::post('v1/login', [App\Http\Controllers\API\AuthController::class, 'login'
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('v1/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+    Route::get('v1/todos',[App\Http\Controllers\API\TodoController::class,'index']);
+    Route::post('v1/todos',[App\Http\Controllers\API\TodoController::class,'store']);
+    Route::get('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'show']);
+    Route::put('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'update']);
+    Route::delete('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'destroy']);
 });

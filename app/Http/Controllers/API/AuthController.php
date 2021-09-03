@@ -27,17 +27,6 @@ class AuthController extends Controller
             ];
             return response()->json($respon, 200);
         } else {
-            $credentials = request(['email', 'password']);
-            if (!Auth::attempt($credentials)) {
-                $respon = [
-                    'status' => 'error',
-                    'msg' => 'Unathorized',
-                    'errors' => null,
-                    'content' => null,
-                ];
-                return response()->json($respon, 401);
-            }
-
             $user = User::where('email', $request->email)->first();
             if (! \Hash::check($request->password, $user->password, [])) {
                 throw new \Exception('Error in Login');
