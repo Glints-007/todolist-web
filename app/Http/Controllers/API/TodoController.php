@@ -13,9 +13,9 @@ class TodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Todo::where('userId', $request->user()->id)->get();
     }
 
     /**
@@ -36,7 +36,34 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string|max:100',
+        ]);
+
+        if ($validate->fails()) {
+            $respon = [
+                'status' => 'error',
+                'msg' => 'Validator error',
+                'errors' => $validate->errors(),
+                'content' => null,
+            ];
+            return response()->json($respon, 200);
+        } else {
+            Todo::create([
+                'userId' => $request->user()->id,
+                'name' => $request->name,
+                'date' => $request->date,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Record stored',
+                'errors' => null,
+                'userId' => $request->user()->id,
+                'name' => $request->name,
+                'date' => $request->date,
+            ]);
+        }
     }
 
     /**
@@ -45,9 +72,9 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function show(Todo $todo)
+    public function show($id)
     {
-        //
+        return Todo::find($id)->first();
     }
 
     /**
@@ -68,9 +95,29 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Todo $todo)
+    public function update(Request $request, $id)
     {
-        //
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string|max:100',
+        ]);
+
+        if ($validate->fails()) {
+            $respon = [
+                'status' => 'error',
+                'msg' => 'Validator error',
+                'errors' => $validate->errors(),
+                'content' => null,
+            ];
+            return response()->json($respon, 200);
+        } else {
+            Todo::find($id)->update($request->all());
+            
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Record updated',
+                'errors' => null,
+            ]);
+        }
     }
 
     /**
@@ -79,8 +126,14 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
+    public function destroy($id)
     {
-        //
+        Todo::destroy($id);
+        
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Record deleted',
+            'errors' => null,
+        ]);
     }
 }
