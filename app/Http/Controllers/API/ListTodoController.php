@@ -83,19 +83,10 @@ class ListTodoController extends Controller
      */
     public function show($todoId, $id)
     {
-        $todo = Todo::find($todoId);
-
-        if(! $todo){
-            $respon = [
-                'status' => 'error',
-                'msg' => "Todo doesn't exist",
-                'content' => null,
-            ];
-            return response()->json($respon, 200);
-        }
-        else {
-            return ListTodo::find($id)->first();
-        }
+        return ListTodo::where([
+            ['id', $id],
+            ['todoId', $todoId],
+        ])->first();
     }
 
     /**
@@ -161,7 +152,10 @@ class ListTodoController extends Controller
      */
     public function destroy(Request $request, $todoId, $id)
     {
-        $old = ListTodo::find($id)->first()->image;
+        $old = ListTodo::where([
+            ['id', $id],
+            ['todoId', $todoId],
+        ])->first()->image;
         preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
         cloudinary()->uploadApi()->destroy($public[1]);
         ListTodo::destroy($id);
