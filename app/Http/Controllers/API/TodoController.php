@@ -113,13 +113,23 @@ class TodoController extends Controller
             ];
             return response()->json($respon, 200);
         } else {
-            Todo::find($id)->update($request->all());
-            
-            return response()->json([
-                'status' => 'success',
-                'msg' => 'Record updated',
-                'errors' => null,
-            ]);
+            $todo = Todo::where([
+                ['id', $id],
+                ['userId', $request->user()->id],
+            ])->update($request->all());
+
+            if($todo == 0){
+                return response()->json([
+                    'status' => 'failed',
+                    'msg' => "Record with parameters requested doesn't exist or user unauthorized",
+                ], 404);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => 'Record updated',
+                    'errors' => null,
+                ]);
+            }
         }
     }
 
