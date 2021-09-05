@@ -72,9 +72,12 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        return Todo::find($id)->first();
+        return Todo::where([
+            ['id', $id],
+            ['userId', $request->user()->id],
+        ])->first();
     }
 
     /**
