@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('v1/user', function (Request $request) {
     return $request->user();
 });
 Route::post('v1/register', [App\Http\Controllers\API\AuthController::class, 'register']);
@@ -28,4 +28,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'show']);
     Route::put('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'update']);
     Route::delete('v1/todos/{id}',[App\Http\Controllers\API\TodoController::class,'destroy']);
+    Route::get('v1/todos/{id}/lists',[App\Http\Controllers\API\ListTodoController::class,'index']);
+    Route::post('v1/todos/{id}/lists',[App\Http\Controllers\API\ListTodoController::class,'store']);
+    Route::get('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'show']);
+    Route::put('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'update']);
+    Route::delete('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'destroy']);
 });
