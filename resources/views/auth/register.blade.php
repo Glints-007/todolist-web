@@ -1,9 +1,9 @@
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
-            <a href="/">
+            {{-- <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
+            </a> --}}
         </x-slot>
 
         <!-- Validation Errors -->
@@ -47,13 +47,13 @@
 
             <!-- Role -->
             <div class="mt-4">
-                <x-label for="role" :value="__('Role')" />
+                <x-label for="role" :value="__('Register as')" />
 
-                <select id="role" class="block mt-1 w-full"
+                <x-select id="role" class="block mt-1 w-full"
                                 name="role" required>
                                 <option value=0>User</option>
                                 <option value=1>Admin</option>
-                </select>
+                </x-select>
             </div>
 
             <div class="flex items-center justify-end mt-4">
