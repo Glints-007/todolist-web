@@ -6,7 +6,8 @@
             <div class="row">
                 <div class="col-lg-8" >
                     <h1>To Do App</h1>
-                    <a href="{{url('create/todo')}}" class="btn btn-primary"> Add Todo</a>
+                    
+                    <a href="{{route('create.todolist', ['todoId' => $todoId])}}" class="btn btn-primary"> Add Todo List</a> 
                 </div>
 
                 <div class="col-lg-8 mt-5">
@@ -15,22 +16,20 @@
                             <!-- <th>Id</th>
                             <th>User Id</th> -->
                             <th>Name</th>
-                            <th>Date</th>
+                            <th>Content</th>
+                            <th>Image</th>
                             <th>Action</th>
                         </tr>
                         @foreach ($data as $dataTodo)
                             <tr>
                                 <!-- <td>{{ $dataTodo->id }}</td>
                                 <td>{{ $dataTodo->userId }}</td> -->
-                                <td>{{ $dataTodo->name }}</td>
-                                <td>{{ $dataTodo->date }}</td>
+                                <td>{{ $dataTodoList->name }}</td>
+                                <td>{{ $dataTodoList->Image }}</td>
+                                <td>{{ $dataTodoList->date }}</td>
                                 <td>
-                                    <a href="{{ url('/show/todo/'.$dataTodo->id) }}" class="btn btn-warning">Edit</a>
-                                    <a href="{{ url('/delete/todo/'.$dataTodo->id) }}" class="btn btn-danger">Delete</a>
-                                    <!-- <a href="{{url('/todolist')}}" class="btn btn-primary">See Details</a> -->
-                                    
-                                    <a href="{{ route('todolist', ['todoId' => $dataTodo->id]) }}" class="btn btn-primary">See Details</a>
-
+                                    <a href="{{ url('/show/todolist/'.$dataTodoList->id) }}" class="btn btn-warning">Edit</a>
+                                    <a href="{{ url('/delete/todolist/'.$dataTodoList->id) }}" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
                         @endforeach

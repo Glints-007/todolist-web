@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ListTodo;
 use Illuminate\Http\Request;
+use Auth;
 
 class ListTodoController extends Controller
 {
@@ -12,9 +13,15 @@ class ListTodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index($todoId)
     {
-        //
+
+        $user = Auth::user();
+        $data = ListTodo::where('todoId', $todoId)->get();
+        return view('listtodo.index')->with([
+            'data' => $data, 'todoId' => $todoId
+        ]);
     }
 
     /**
@@ -22,9 +29,11 @@ class ListTodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($todoId)
     {
-        //
+        return view('listtodo.create')->with([
+            'todoId' => $todoId
+        ]);
     }
 
     /**
@@ -33,9 +42,19 @@ class ListTodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $todoId)
     {
-        //
+        
+        $user = Auth::user();
+        $data = new ListTodo();
+            $data->name = $request->name;
+            $data->todoId = $todoId;
+            $data->userId = $user->id;
+
+        //Todo::insert($data);
+        $data->save();
+        return redirect('todolist',['todoId'=>$todoId]);
+        
     }
 
     /**
@@ -44,9 +63,12 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function show(ListTodo $listTodo)
+    public function show($id)
     {
-        //
+        $data = ListTodo::findOrFail($id);
+        return view('listtodo.show')->with([
+            'data' => $data
+        ]);
     }
 
     /**
@@ -67,9 +89,12 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ListTodo $listTodo)
+    public function update(Request $request, $listTodo)
     {
-        //
+        $item = ListTodo::findOrFail($id);
+        $data = $request->except(['_token']);
+        $item->update($data);
+        return redirect('/dashboard');
     }
 
     /**
@@ -80,6 +105,8 @@ class ListTodoController extends Controller
      */
     public function destroy(ListTodo $listTodo)
     {
-        //
+        $item = ListTodo::findOrFail($id);
+        $item->delete();
+        return redirect('/dashboard');
     }
 }
