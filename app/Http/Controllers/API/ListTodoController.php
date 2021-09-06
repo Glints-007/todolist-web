@@ -124,23 +124,31 @@ class ListTodoController extends Controller
             ];
             return response()->json($respon, 200);
         } else {
-            $todolist = ListTodo::find($id);
-            $todolist->name = $request->name;
-            $todolist->content = $request->content;
-            if($request->image){
-                $old = ListTodo::find($id)->first()->image;
-                preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
-                cloudinary()->uploadApi()->destroy($public[1]);
-                $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
-                $todolist->image = $response;
+            $user = Todo::where('id', $todoId)->first()->userId;
+            if($user != $request->user()->id){
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => "Unauthorized",
+                ], 500);
+            } else {
+                $todolist = ListTodo::find($id);
+                $todolist->name = $request->name;
+                $todolist->content = $request->content;
+                if($request->image){
+                    $old = ListTodo::find($id)->first()->image;
+                    preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+                    cloudinary()->uploadApi()->destroy($public[1]);
+                    $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+                    $todolist->image = $response;
+                }
+                $todolist->save();
+                
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => 'Record updated',
+                    'errors' => null,
+                ]);
             }
-            $todolist->save();
-            
-            return response()->json([
-                'status' => 'success',
-                'msg' => 'Record updated',
-                'errors' => null,
-            ]);
         }
     }
 
