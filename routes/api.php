@@ -33,4 +33,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'show']);
     Route::put('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'update']);
     Route::delete('v1/todos/{todoId}/lists/{id}',[App\Http\Controllers\API\ListTodoController::class,'destroy']);
+
+    Route::get('v1/users',[App\Http\Controllers\API\UserController::class,'index']);
+    Route::get('v1/users/{id}',[App\Http\Controllers\API\UserController::class,'show']);
+    Route::put('v1/users/{id}',[App\Http\Controllers\API\UserController::class,'update']);
+    Route::delete('v1/users/{id}',[App\Http\Controllers\API\UserController::class,'destroy']);
 });
