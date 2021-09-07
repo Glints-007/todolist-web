@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Auth;
 
 class TodoController extends Controller
 {
     public function index()
     {
-        $data = Todo::all();
+        $user = Auth::user();
+        $data = Todo::where('userId', $user->id)->get();
         return view('todo.index')->with([
             'data' => $data
         ]);
@@ -28,17 +30,21 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->except(['_token']);
+        /*$data = $request->except(['_token']);
         Todo::insert($data);
-        return redirect('/');
+        return redirect('/dashboard');*/
+        $user = Auth::user();
+        $data = new Todo();
+            $data->date = now();
+            $data->name = $request->name;
+            $data->userId = $user->id;
+
+        //Todo::insert($data);
+        $data->save();
+        return redirect('/dashboard');
+        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $data = Todo::findOrFail($id);
@@ -70,7 +76,7 @@ class TodoController extends Controller
         $item = Todo::findOrFail($id);
         $data = $request->except(['_token']);
         $item->update($data);
-        return redirect('/todo');
+        return redirect('/dashboard');
     }
 
     /**
@@ -83,6 +89,6 @@ class TodoController extends Controller
     {
         $item = Todo::findOrFail($id);
         $item->delete();
-        return redirect('/todo');
+        return redirect('/dashboard');
     }
 }

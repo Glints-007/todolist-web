@@ -47,4 +47,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Todo::class, 'userId');
     }
+
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($user) {
+             $user->todo()->each(function($todo) {
+                $todo->delete();
+             });
+        });
+    }
 }

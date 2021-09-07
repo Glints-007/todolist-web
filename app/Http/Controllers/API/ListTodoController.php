@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\ListTodo;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
-class TodoController extends Controller
+class ListTodoController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($id)
     {
-        return Todo::where('userId', $request->user()->id)->get();
+        return ListTodo::where('todoId', $id)->get();
     }
 
     /**
@@ -34,10 +37,12 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $validate = \Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'required|mimes:jpg,jpeg,png,bmp',
         ]);
 
         if ($validate->fails()) {
@@ -49,19 +54,23 @@ class TodoController extends Controller
             ];
             return response()->json($respon, 200);
         } else {
-            Todo::create([
-                'userId' => $request->user()->id,
+            $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+
+            ListTodo::create([
+                'todoId' => $id,
                 'name' => $request->name,
-                'date' => $request->date,
+                'content' => $request->content,
+                'image' => $response,
             ]);
 
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Record stored',
                 'errors' => null,
-                'userId' => $request->user()->id,
+                'todoId' => $id,
                 'name' => $request->name,
-                'date' => $request->date,
+                'content' => $request->content,
+                'image' => $response,
             ]);
         }
     }
@@ -69,39 +78,41 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($todoId, $id)
     {
-        return Todo::where([
+        return ListTodo::where([
             ['id', $id],
-            ['userId', $request->user()->id],
+            ['todoId', $todoId],
         ])->first();
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function edit(Todo $todo)
+    public function edit(ListTodo $listTodo, $todoId, $id)
     {
-        //
+        
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $todoId, $id)
     {
         $validate = \Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'mimes:jpg,jpeg,png,bmp',
         ]);
 
         if ($validate->fails()) {
@@ -113,17 +124,25 @@ class TodoController extends Controller
             ];
             return response()->json($respon, 200);
         } else {
-            $todo = Todo::where([
-                ['id', $id],
-                ['userId', $request->user()->id],
-            ])->update($request->all());
-
-            if($todo == 0){
+            $user = Todo::where('id', $todoId)->first()->userId;
+            if($user != $request->user()->id){
                 return response()->json([
-                    'status' => 'failed',
-                    'msg' => "Record with parameters requested doesn't exist or user unauthorized",
-                ], 404);
+                    'status' => 'error',
+                    'msg' => "Unauthorized",
+                ], 500);
             } else {
+                $todolist = ListTodo::find($id);
+                $todolist->name = $request->name;
+                $todolist->content = $request->content;
+                if($request->image){
+                    $old = ListTodo::find($id)->first()->image;
+                    preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+                    cloudinary()->uploadApi()->destroy($public[1]);
+                    $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+                    $todolist->image = $response;
+                }
+                $todolist->save();
+                
                 return response()->json([
                     'status' => 'success',
                     'msg' => 'Record updated',
@@ -136,12 +155,18 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $todoId, $id)
     {
-        Todo::destroy($id);
+        $old = ListTodo::where([
+            ['id', $id],
+            ['todoId', $todoId],
+        ])->first()->image;
+        preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+        cloudinary()->uploadApi()->destroy($public[1]);
+        ListTodo::destroy($id);
         
         return response()->json([
             'status' => 'success',
