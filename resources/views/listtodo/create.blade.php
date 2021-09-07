@@ -6,7 +6,8 @@
             <h1>Add To do</h1>
             <div class="col-lg-8">
                 <!-- <form action="{{ url('/store/todolist') }}" method="POST"> -->
-                <form action="{{ route('create.todolist', ['todoId' => $todoId]) }}" method="get">
+                <!-- <form action="{{ route('create.todolist', ['todoId' => $todoId]) }}" method="POST" enctype="multipart/form-data"> -->
+                <form action="{{ $todoId.url('/store/todolist') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <!-- <div class="form-group">
                         <label for="nama">User Id</label>
