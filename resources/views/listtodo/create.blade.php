@@ -5,7 +5,8 @@
         <div class="container mt-5">
             <h1>Add To do</h1>
             <div class="col-lg-8">
-                <form action="{{ url('/store/todo') }}" method="POST">
+                <!-- <form action="{{ url('/store/todolist') }}" method="POST"> -->
+                <form action="{{ route('create.todolist', ['todoId' => $todoId]) }}" method="get">
                     @csrf
                     <!-- <div class="form-group">
                         <label for="nama">User Id</label>
@@ -16,6 +17,15 @@
                         <input type="text" name="name" class="form-control">
                     </div>
 
+                    <div class="form-group">
+                        <label for="">Description</label>
+                        <textarea name="content" rows="3" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="file" name="image" class="form-control">
+                    </div>
+
                     <!-- <div class="form-group">
                         <label for="nama">Date</label>
                         <input type="date" name="date" class="form-control">
@@ -24,7 +34,7 @@
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                     <div class="form-group mt-2">
-                        <a href="{{ url('/todo') }}">
+                        <a href="{{ url('/todolist') }}">
                             << Back</a>
                     </div>
                 </form>
