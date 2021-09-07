@@ -25,4 +25,13 @@ class Todo extends Model
     {
         return $this->hasMany(ListTodo::class, 'todoId');
     }
+
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($todo) {
+             $todo->list()->each(function($list) {
+                $list->delete();
+             });
+        });
+    }
 }
