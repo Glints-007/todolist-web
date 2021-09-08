@@ -95,7 +95,7 @@ class ListTodoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function update(Request $request, $todoId)
+    public function update(Request $request, $todoListId)
     {
         $validate = \Validator::make($request->all(), [
             'name' => 'required|string',
@@ -103,18 +103,18 @@ class ListTodoController extends Controller
             'image' => 'mimes:jpg,jpeg,png,bmp',
         ]);
 
-        $todolist = ListTodo::find($todoId);
+        $todolist = ListTodo::find($todoListId);
         $todolist->name = $request->name;
         $todolist->content = $request->content;
         if($request->image){
-            $old = ListTodo::find($todoId)->first()->image;
+            $old = ListTodo::find($todoListId)->first()->image;
             preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
             cloudinary()->uploadApi()->destroy($public[1]);
             $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
             $todolist->image = $response;
         }
         $todolist->save();
-        return redirect($todoId.'/todolist');     
+        return redirect($todolist->todoId.'/todolist');     
     }
 
     /**
@@ -123,10 +123,11 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function delete($todoId)
+    public function delete($todoListId)
 
     {
-        $item = ListTodo::findOrFail($todoId);
+        $item = ListTodo::findOrFail($todoListId);
+        $todoId = $item->todoId;
         $item->delete();
         return redirect($todoId.'/todolist');
     }

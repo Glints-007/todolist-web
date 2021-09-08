@@ -31,7 +31,7 @@
                     </div>
                     
                     <div class="form-group mt-2">
-                        <a href="{{ url($todoId.'/todolist') }}">
+                        <a href="{{ url($data->todoId.'/todolist') }}">
                             << Back</a>
                     </div>
                 </form>
