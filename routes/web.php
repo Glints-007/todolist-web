@@ -43,3 +43,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+//admin page
+Route::resource('index-admin', AdminController::class);
+Route::put('editProfile/{id}', [AdminController::class, 'update'])->name('editProfile');
+Route::put('editPassword/{id}', [AdminController::class, 'changePassword'])->name('editPassword');
