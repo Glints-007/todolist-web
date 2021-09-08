@@ -123,7 +123,7 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function destroy($todoId)
+    public function delete($todoId)
 
     {
         $item = ListTodo::findOrFail($todoId);
