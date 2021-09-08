@@ -4,3 +4,5 @@
 <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap5.min.js"></script>
 <script src="{{asset('admin/js/datatables.js')}}" language="JavaScript" type="text/javascript"></script>
+<script src="{{asset('admin/js/admin.js')}}" language="JavaScript" type="text/javascript"></script>
+<script src="{{asset('vendor/sweetalert/sweetalert.all.js')}}"></script>

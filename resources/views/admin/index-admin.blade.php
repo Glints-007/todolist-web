@@ -12,10 +12,10 @@
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Name
+                    {{auth()->user()->name}}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-light dropdown-menu-end" aria-labelledby="navbarDarkDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Log Out</a></li>
+                        <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a></li>
                     </ul>
                     </li>
                 </ul>
@@ -47,25 +47,26 @@
                 <div class="card-body">
                     <!-- Table -->
                     <table class="table table-hover" id="data-table">
+                        <meta name="csrf-token-delete" content="{{ csrf_token() }}">
                         <thead>
                             <tr>
-                                <th>No.</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        @foreach($data_user as $user)
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>abc</td>
-                                <td>abc@abc.com</td>
+                                <td>{{$user->name}}</td>
+                                <td>{{$user->email}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-warning"data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
-                                    <button type="button" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-warning"data-bs-toggle="modal" data-bs-target="#editModal{{$user->id}}">Edit</button>
+                                    <button type="button" class="btn btn-danger deleteuser" data-id="{{$user->id}}" data-url="{{ route('index-admin.destroy', $user->id) }}">Delete</button>
                                 </td>
                             </tr>
                         </tbody>
+                        @endforeach
                     </table>
                     <!-- End of Table -->
                 </div>
@@ -75,7 +76,8 @@
 </div>
 
 <!-- Modal Edit -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+@foreach($data_user as $user)
+<div class="modal fade" id="editModal{{$user->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
         <div class="modal-header">
@@ -83,25 +85,27 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            <meta name="csrf-token-edit" content="{{ csrf_token() }}">
             <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control">
+                <label class="form-label">Name :</label>
+                <input type="text" class="form-control" id="name_edit{{$user->id}}" value="{{$user->name}}">
             </div>
             <div class="mb-3">
-                <label class="form-label">Email address</label>
-                <input type="email" class="form-control">
+                <label class="form-label">Email address :</label>
+                <input type="email" class="form-control" id="email_edit{{$user->id}}" value="{{$user->email}}">
             </div>
-            <div class="mb-3">
-                <label class="form-label"></label>
-                <input type="text" class="form-control">
-            </div>
+            <div class="form-group">
+            <label for="password">New Password :</label>
+            <input type="password" class="form-control" id="password_edit{{$user->id}}" name="password" required autocomplete="off">
+        </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary edituser" data-oldname="{{$user->name}}"  data-oldemail="{{$user->email}}" data-oldpassword="{{$user->password}}" data-id="{{$user->id}}" data-url="{{ route('index-admin.update', $user->id) }}">Save changes</button>
         </div>
         </div>
     </div>
 </div>
+@endforeach
 
 @endsection
