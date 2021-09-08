@@ -7,7 +7,7 @@
             <div class="col-lg-8">
                 <!-- <form action="{{ url('/store/todolist') }}" method="POST"> -->
                 <!-- <form action="{{ route('create.todolist', ['todoId' => $todoId]) }}" method="POST" enctype="multipart/form-data"> -->
-                <form action="{{ $todoId.url('/store/todolist') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url($todoId.'/store/todolist') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <!-- <div class="form-group">
                         <label for="nama">User Id</label>
@@ -15,16 +15,16 @@
                     </div> -->
                     <div class="form-group">
                         <label for="nama">Nama</label>
-                        <input type="text" name="name" class="form-control">
+                        <input type="text" name="name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                         <label for="">Description</label>
-                        <textarea name="content" rows="3" class="form-control"></textarea>
+                        <textarea name="content" rows="3" class="form-control" required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <input type="file" name="image" class="form-control">
+                        <input type="file" name="image" class="form-control" required>
                     </div>
 
                     <!-- <div class="form-group">
@@ -35,7 +35,7 @@
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                     <div class="form-group mt-2">
-                        <a href="{{ url('/todolist') }}">
+                        <a href="{{ url($todoId.'/todolist') }}">
                             << Back</a>
                     </div>
                 </form>

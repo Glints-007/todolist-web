@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/{todoId}/create/todolist', [ListTodoController::class, 'create'])->name('create.todolist'); 
     Route::post('/{todoId}/store/todolist', [ListTodoController::class, 'store']);
     Route::get('/show/todo/{todoId}/todolist', [ListTodoController::class, 'show']);
-    Route::post('/update/todo/{todoId}/todolist', [ListTodoController::class, 'update']);
+    Route::put('/update/todo/{todoId}/todolist', [ListTodoController::class, 'update']);
     Route::get('/delete/todo/{todoId}/todolist', [ListTodoController::class, 'delete']);
     
 });

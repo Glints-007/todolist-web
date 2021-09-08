@@ -24,12 +24,12 @@
                             <tr>
                                 <!-- <td>{{ $dataTodo->id }}</td>
                                 <td>{{ $dataTodo->userId }}</td> -->
-                                <td>{{ $dataTodoList->name }}</td>
-                                <td>{{ $dataTodoList->Image }}</td>
-                                <td>{{ $dataTodoList->date }}</td>
+                                <td>{{ $dataTodo->name }}</td>
+                                <td>{{ $dataTodo->content }}</td>
+                                <td><img src="{{ $dataTodo->image }}" alt=""></td>
                                 <td>
-                                    <a href="{{ url('/show/todolist/'.$dataTodoList->id) }}" class="btn btn-warning">Edit</a>
-                                    <a href="{{ url('/delete/todolist/'.$dataTodoList->id) }}" class="btn btn-danger">Delete</a>
+                                    <a href="{{ url('/show/todo/'.$dataTodo->id.'/todolist/') }}" class="btn btn-warning">Edit</a>
+                                    <a href="{{ url('/delete/todo/'.$dataTodo->id.'/todolist/') }}" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
                         @endforeach
