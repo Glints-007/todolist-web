@@ -47,7 +47,7 @@ class ListTodoController extends Controller
             'name' => 'required|string',
             'content' => 'required|string',
             'image' => 'required|mimes:jpg,jpeg,png,bmp',
-        ]);    
+        ]);
 
         $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
 
@@ -123,7 +123,8 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function delete($todoId)
+    public function destroy($todoId)
+
     {
         $item = ListTodo::findOrFail($todoId);
         $item->delete();

@@ -28,8 +28,11 @@
                                 <td>{{ $dataTodo->content }}</td>
                                 <td><img src="{{ $dataTodo->image }}" alt=""></td>
                                 <td>
+
                                     <a href="{{ url(''.$dataTodo->id.'/show/todolist/') }}" class="btn btn-warning">Edit</a>
                                     <a href="{{ url(''.$dataTodo->id.'/delete/todolist/') }}" class="btn btn-danger">Delete</a>
+
+
                                 </td>
                             </tr>
                         @endforeach
