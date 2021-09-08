@@ -55,3 +55,7 @@ Route::get('/show/todo/{id}', [TodoController::class, 'show']);
 Route::post('/update/todo/{id}', [TodoController::class, 'update']);
 Route::get('/delete/todo/{id}', [TodoController::class, 'delete']);*/
 
+//admin page
+Route::resource('index-admin', AdminController::class);
+Route::put('editProfile/{id}', [AdminController::class, 'update'])->name('editProfile');
+Route::put('editPassword/{id}', [AdminController::class, 'changePassword'])->name('editPassword');
