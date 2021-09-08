@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ListTodo;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Auth;
 use GuzzleHttp\Client;
@@ -22,9 +23,10 @@ class ListTodoController extends Controller
     {
 
         $user = Auth::user();
-        $data = ListTodo::where('todoId', $todoId)->get();
+        $data = ListTodo::with('todo')->where('todoId', $todoId)->get();
+        $todo = Todo::where('id', $todoId)->first();
         return view('listtodo.new.index')->with([
-            'data' => $data, 'todoId' => $todoId
+            'data' => $data, 'todoId' => $todoId, 'todo' => $todo
         ]);
     }
 
@@ -113,10 +115,11 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function delete($todoId)
+    public function delete($todolistId)
     {
-        $item = ListTodo::findOrFail($todoId);
+        $item = ListTodo::findOrFail($todolistId);
+        $itemTodoid = $item->todoId;
         $item->delete();
-        return redirect('/' . $todoId . '/todolist');
+        return redirect('/' . $itemTodoid . '/todolist');
     }
 }

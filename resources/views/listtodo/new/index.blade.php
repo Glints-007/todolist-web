@@ -11,7 +11,7 @@
             <a href="{{url('/dashboard')}}">
                 <i class="fas fa-chevron-left"></i><span> Back to dashboard</span>
             </a>
-            <h1>Judul To Do</h1>
+            <h1>{{ $todo->name }}</h1>
             <a data-toggle="modal" data-target="#subtask-modal-form">
                 <i class="fas fa-plus"></i> <span>Add Subtask</span>
             </a>
@@ -47,15 +47,15 @@
             <form action="{{ url(''.$todoId.'/store/todolist') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add To Do List</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Subtask</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type=text name="name" class="cust-form-control" id="exampleFormControlInput1"
-                            placeholder="Insert your to do list here">
+                        <input name="name" class="cust-form-control" id="exampleFormControlInput1"
+                            placeholder="Insert your subtask here">
                     </div>
 
                     <div class="form-group">
