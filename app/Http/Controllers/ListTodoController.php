@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ListTodo;
 use Illuminate\Http\Request;
 use Auth;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
+use Illuminate\Support\Facades\Http;
+
 
 class ListTodoController extends Controller
 {
@@ -19,7 +23,7 @@ class ListTodoController extends Controller
 
         $user = Auth::user();
         $data = ListTodo::where('todoId', $todoId)->get();
-        return view('listtodo.index')->with([
+        return view('listtodo.new.index')->with([
             'data' => $data, 'todoId' => $todoId
         ]);
     }
@@ -44,17 +48,23 @@ class ListTodoController extends Controller
      */
     public function store(Request $request, $todoId)
     {
-        
-        $user = Auth::user();
-        $data = new ListTodo();
-            $data->name = $request->name;
-            $data->todoId = $todoId;
-            $data->userId = $user->id;
 
-        //Todo::insert($data);
-        $data->save();
-        return redirect('todolist',['todoId'=>$todoId]);
-        
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'required|mimes:jpg,jpeg,png,bmp',
+        ]);
+
+        $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+
+        ListTodo::create([
+            'todoId' => $todoId,
+            'name' => $request->name,
+            'content' => $request->content,
+            'image' => $response,
+        ]);
+
+        return redirect($todoId . '/todolist');
     }
 
     /**
@@ -91,10 +101,10 @@ class ListTodoController extends Controller
      */
     public function update(Request $request, $listTodo)
     {
-        $item = ListTodo::findOrFail($id);
-        $data = $request->except(['_token']);
-        $item->update($data);
-        return redirect('/dashboard');
+        // $item = ListTodo::findOrFail($id);
+        // $data = $request->except(['_token']);
+        // $item->update($data);
+        // return redirect('/dashboard');
     }
 
     /**
@@ -103,10 +113,10 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ListTodo $listTodo)
+    public function delete($todoId)
     {
-        $item = ListTodo::findOrFail($id);
+        $item = ListTodo::findOrFail($todoId);
         $item->delete();
-        return redirect('/dashboard');
+        return redirect('/' . $todoId . '/todolist');
     }
 }
