@@ -34,3 +34,8 @@ Route::get('/show/todo/{id}', [TodoController::class, 'show']);
 Route::post('/update/todo/{id}', [TodoController::class, 'update']);
 Route::get('/delete/todo/{id}', [TodoController::class, 'delete']);
 
+//admin page
+Route::get('/index-admin', function () {
+    return view('admin.index-admin');
+});
+
