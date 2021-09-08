@@ -16,7 +16,6 @@ class ListTodoController extends Controller
 
     public function index($todoId)
     {
-
         $user = Auth::user();
         $data = ListTodo::where('todoId', $todoId)->get();
         return view('listtodo.index')->with([
@@ -44,16 +43,22 @@ class ListTodoController extends Controller
      */
     public function store(Request $request, $todoId)
     {
-        
-        $user = Auth::user();
-        $data = new ListTodo();
-            $data->name = $request->name;
-            $data->todoId = $todoId;
-            $data->userId = $user->id;
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'required|mimes:jpg,jpeg,png,bmp',
+        ]);    
 
-        //Todo::insert($data);
-        $data->save();
-        return redirect('todolist',['todoId'=>$todoId]);
+        $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+
+        ListTodo::create([
+            'todoId' => $todoId,
+            'name' => $request->name,
+            'content' => $request->content,
+            'image' => $response,
+        ]);
+
+        return redirect($todoId.'/todolist');
         
     }
 
@@ -63,11 +68,11 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($todoId)
     {
-        $data = ListTodo::findOrFail($id);
+        $data = ListTodo::findOrFail($todoId);
         return view('listtodo.show')->with([
-            'data' => $data
+            'data' => $data, 'todoId' => $todoId
         ]);
     }
 
@@ -89,12 +94,27 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $listTodo)
+
+    public function update(Request $request, $todoId)
     {
-        $item = ListTodo::findOrFail($id);
-        $data = $request->except(['_token']);
-        $item->update($data);
-        return redirect('/dashboard');
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'mimes:jpg,jpeg,png,bmp',
+        ]);
+
+        $todolist = ListTodo::find($todoId);
+        $todolist->name = $request->name;
+        $todolist->content = $request->content;
+        if($request->image){
+            $old = ListTodo::find($todoId)->first()->image;
+            preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+            cloudinary()->uploadApi()->destroy($public[1]);
+            $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+            $todolist->image = $response;
+        }
+        $todolist->save();
+        return redirect($todoId.'/todolist');     
     }
 
     /**
@@ -103,10 +123,10 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ListTodo $listTodo)
+    public function delete($todoId)
     {
-        $item = ListTodo::findOrFail($id);
+        $item = ListTodo::findOrFail($todoId);
         $item->delete();
-        return redirect('/dashboard');
+        return redirect($todoId.'/todolist');
     }
 }

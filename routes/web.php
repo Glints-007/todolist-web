@@ -36,22 +36,12 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/{todoId}/todolist', [ListTodoController::class, 'index'])->name('todolist');
     Route::get('/{todoId}/create/todolist', [ListTodoController::class, 'create'])->name('create.todolist'); 
     Route::post('/{todoId}/store/todolist', [ListTodoController::class, 'store']);
-    Route::get('/show/todo/{todoId}/todolist', [ListTodoController::class, 'show']);
-    Route::post('/update/todo/{todoId}/todolist', [ListTodoController::class, 'update']);
-    Route::get('/delete/todo/{todoId}/todolist', [ListTodoController::class, 'delete']);
+    Route::get('/{todoId}/show/todolist', [ListTodoController::class, 'show']);
+    Route::put('/{todoId}/update/todolist', [ListTodoController::class, 'update']);
+    Route::get('/{todoId}/delete/todolist', [ListTodoController::class, 'destroy']);
     
 });
 
 require __DIR__.'/auth.php';
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-/*Route::get('/todo', [TodoController::class, 'index']);
-Route::get('/create/todo', [TodoController::class, 'create']);
-Route::post('/store/todo', [TodoController::class, 'store']);
-Route::get('/show/todo/{id}', [TodoController::class, 'show']);
-Route::post('/update/todo/{id}', [TodoController::class, 'update']);
-Route::get('/delete/todo/{id}', [TodoController::class, 'delete']);*/
 
