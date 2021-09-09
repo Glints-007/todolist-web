@@ -42,7 +42,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/{todoId}/delete/todolist', [ListTodoController::class, 'delete']);
 });
 
-
 require __DIR__ . '/auth.php';
 
 //admin page

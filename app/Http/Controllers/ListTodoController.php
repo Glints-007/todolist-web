@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ListTodo;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Auth;
 use GuzzleHttp\Client;
@@ -22,9 +23,10 @@ class ListTodoController extends Controller
     {
 
         $user = Auth::user();
-        $data = ListTodo::where('todoId', $todoId)->get();
+        $data = ListTodo::with('todo')->where('todoId', $todoId)->get();
+        $todo = Todo::where('id', $todoId)->first();
         return view('listtodo.new.index')->with([
-            'data' => $data, 'todoId' => $todoId
+            'data' => $data, 'todoId' => $todoId, 'todo' => $todo
         ]);
     }
 
@@ -76,9 +78,7 @@ class ListTodoController extends Controller
     public function show($id)
     {
         $data = ListTodo::findOrFail($id);
-        return view('listtodo.show')->with([
-            'data' => $data
-        ]);
+        return response()->json($data);
     }
 
     /**
@@ -99,12 +99,27 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $listTodo)
+    public function update(Request $request, $todoListId)
     {
-        // $item = ListTodo::findOrFail($id);
-        // $data = $request->except(['_token']);
-        // $item->update($data);
-        // return redirect('/dashboard');
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'mimes:jpg,jpeg,png,bmp',
+        ]);
+
+        $todolist = ListTodo::find($todoListId);
+
+        $todolist->name = $request->name;
+        $todolist->content = $request->content;
+        if ($request->image) {
+            $old = ListTodo::find($todoListId)->first()->image;
+            preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+            cloudinary()->uploadApi()->destroy($public[1]);
+            $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+            $todolist->image = $response;
+        }
+        $todolist->save();
+        return redirect($todolist->todoId . '/todolist');
     }
 
     /**
@@ -113,10 +128,12 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function delete($todoId)
+    public function delete($todoListId)
+
     {
-        $item = ListTodo::findOrFail($todoId);
+        $item = ListTodo::findOrFail($todoListId);
+        $todoId = $item->todoId;
         $item->delete();
-        return redirect('/' . $todoId . '/todolist');
+        return redirect($todoId . '/todolist');
     }
 }
