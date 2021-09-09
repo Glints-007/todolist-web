@@ -100,6 +100,25 @@ a:hover {
   opacity: 60%;
 }
 
+.images {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.images img {
+  width: auto;
+  height: 200px;
+  margin-right: 20px;
+  border-radius: 10px;
+}
+
 @media screen and (max-width: 870px) {
   .todolist__section {
     margin-top: 20px;

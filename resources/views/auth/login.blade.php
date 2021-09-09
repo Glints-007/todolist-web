@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card__inner">
                 <div class="image__wrapper">
-                    <img src="{{ asset('img/5488521.png') }}" alt="Illustration Image">
+                    <img src="{{ asset('img/img-1.png') }}" alt="Illustration Image">
                 </div>
                 <div class="login-form">
                     <!-- Session Status -->

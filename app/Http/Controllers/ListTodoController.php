@@ -78,9 +78,7 @@ class ListTodoController extends Controller
     public function show($id)
     {
         $data = ListTodo::findOrFail($id);
-        return view('listtodo.show')->with([
-            'data' => $data
-        ]);
+        return response()->json($data);
     }
 
     /**
@@ -101,12 +99,27 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $listTodo)
+    public function update(Request $request, $todoListId)
     {
-        // $item = ListTodo::findOrFail($id);
-        // $data = $request->except(['_token']);
-        // $item->update($data);
-        // return redirect('/dashboard');
+        $validate = \Validator::make($request->all(), [
+            'name' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'mimes:jpg,jpeg,png,bmp',
+        ]);
+
+        $todolist = ListTodo::find($todoListId);
+
+        $todolist->name = $request->name;
+        $todolist->content = $request->content;
+        if ($request->image) {
+            $old = ListTodo::find($todoListId)->first()->image;
+            preg_match("/upload\/(?:v\d+\/)?([^\.]+)/", $old, $public);
+            cloudinary()->uploadApi()->destroy($public[1]);
+            $response = cloudinary()->upload($request->file('image')->getRealPath())->getSecurePath();
+            $todolist->image = $response;
+        }
+        $todolist->save();
+        return redirect($todolist->todoId . '/todolist');
     }
 
     /**
@@ -115,11 +128,12 @@ class ListTodoController extends Controller
      * @param  \App\Models\ListTodo  $listTodo
      * @return \Illuminate\Http\Response
      */
-    public function delete($todolistId)
+    public function delete($todoListId)
+
     {
-        $item = ListTodo::findOrFail($todolistId);
-        $itemTodoid = $item->todoId;
+        $item = ListTodo::findOrFail($todoListId);
+        $todoId = $item->todoId;
         $item->delete();
-        return redirect('/' . $itemTodoid . '/todolist');
+        return redirect($todoId . '/todolist');
     }
 }

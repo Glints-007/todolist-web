@@ -80,6 +80,20 @@ a:hover{
     }
 }
 
+.images{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    img{
+        width: auto;
+        height: 200px;
+        margin-right: 20px;
+        border-radius: 10px;
+    }
+}
+
+
 @media screen and (max-width:870px) {
 
     .todolist__section{
