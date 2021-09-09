@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
     <div class="container container-fluid">
         <a class="navbar-brand fw-bold" href="">to.do admin</a>
@@ -11,36 +12,26 @@
             <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{auth()->user()->name}}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-light dropdown-menu-end" aria-labelledby="navbarDarkDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a></li>
-                    </ul>
+                        <a class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{auth()->user()->name}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-light dropdown-menu-end" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                                <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a></li>
+                            </form>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 </nav>
-<!-- <div class="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow-sm">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-center fw-bold" href="#">to.do admin</a>
-    <div class="navbar-nav">
-        <div class="nav-item text-nowrap">
-            <li class="dropdown px-3">
-                <a class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Name
-                </a>
-                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarDarkDropdownMenuLink">
-                    <li><a class="dropdown-item" href="#">Log Out</a></li>
-                </ul>
-            </li>
-        </div>
-    </div>
-</div> -->
+<!-- End of Navbar -->
 
+<!-- Main -->
 <div class="container my-md-4">
-    <h5>Data User</h5>
+    <h5 class="fw-bold"><i class="fas fa-user-circle"></i> Data User</h5>
     <div class="row">
         <div class="col">
             <div class="card">
