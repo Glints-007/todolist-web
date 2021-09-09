@@ -29,7 +29,7 @@
                         <h3>{{$dataTodoList->name}}</h3>
                         <p>{{$dataTodoList->content}}</p>
                     </div>
-                    <a class="edit-btn" id="edit-subtask" data-toggle="modal" data-target="#subtask-edit-form" data-id="{{ $dataTodoList->id }}">
+                    <a class="edit-btn" id="edit-subtask" data-toggle="modal" data-target="#subtask-edit-form" data-id="{{ $dataTodoList->id }}" onclick="fetchData({{ $dataTodoList->id }})">
                         <span>Edit</span>
                     </a>
                 </div>
@@ -121,10 +121,8 @@
 <script>
     const editBtn = document.getElementById('edit-subtask');
     let myForm = document.getElementById('edit-form');
-
-    editBtn.addEventListener('click', function (event) {
+    const fetchData = (id) => {
         event.preventDefault();
-        var id = $(this).data('id');
 
         fetch( '/' + id + '/show/todolist', {
             method: 'GET',
@@ -147,8 +145,6 @@
             .catch((error) => {
                 console.error('Error:', error);
             });
-    });
-
-
+    }
 </script>
 @endsection
