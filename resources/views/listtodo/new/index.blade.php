@@ -1,5 +1,7 @@
 @extends('layouts.default')
 
+@section('title', 'My To Do List')
+
 @section('custom-css')
 <link rel="stylesheet" href="{{ asset('css/scss/todolist.css') }}">
 @endsection

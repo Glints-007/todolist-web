@@ -1,5 +1,7 @@
 @extends('layouts.default')
 
+@section('title', 'Dashboard')
+
 @section('content')
 <main>
     <div class="d-flex align-items-center mb-4">
