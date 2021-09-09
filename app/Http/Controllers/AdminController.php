@@ -38,31 +38,6 @@ class AdminController extends Controller
             }
         }
     }
-    public function changePassword(Request $request, $id)
-    {
-        $messages = [
-            'current_password.required' => 'Current Password Tidak Boleh Kosong!',
-            'new_password.required'     => 'New Password Tidak Boleh Kosong!',
-            'confirm_password.required' => 'Confirm Password Tidak Boleh Kosong!',
-            'confirm_password.same'     => 'Password Yang Dimasukkan Tidak Sama',
-            'new_password.different'    => 'Current Password Dan New Password Harus Berbeda',
-            ];
-
-        $validator = \Validator::make($request->all(), [
-            'confirm_password' => ['required', 'same:new_password'],
-            'new_password'     => ['required', 'different:current_password'],
-            'current_password' => ['required', new MatchOldPassword],
-        ], $messages);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()->all()]);
-        }else {
-            $user = User::where('id', $id);
-            $user->update([
-                'password'          => Hash::make($request->new_password),
-            ]);
-        }
-    }
     public function destroy($id)
     {
         User::find($id)->delete();
