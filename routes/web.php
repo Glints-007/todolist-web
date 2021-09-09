@@ -23,9 +23,9 @@ Route::get('/', function () {
 })->middleware(['auth'])->name('dashboard');
 */
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    
+
     Route::get('/dashboard', [TodoController::class, 'index'])->name('dashboard');
     Route::get('/create/todo', [TodoController::class, 'create']);
     Route::post('/store/todo', [TodoController::class, 'store']);
@@ -34,28 +34,19 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/delete/todo/{id}', [TodoController::class, 'delete']);
 
     Route::get('/{todoId}/todolist', [ListTodoController::class, 'index'])->name('todolist');
-    Route::get('/{todoId}/create/todolist', [ListTodoController::class, 'create'])->name('create.todolist'); 
+    Route::get('/{todoId}/create/todolist', [ListTodoController::class, 'create'])->name('create.todolist');
     Route::post('/{todoId}/store/todolist', [ListTodoController::class, 'store']);
-    Route::get('/show/todo/{todoId}/todolist', [ListTodoController::class, 'show']);
-    Route::post('/update/todo/{todoId}/todolist', [ListTodoController::class, 'update']);
-    Route::get('/delete/todo/{todoId}/todolist', [ListTodoController::class, 'delete']);
-    
+
+    Route::get('/{todoId}/show/todolist', [ListTodoController::class, 'show']);
+    Route::put('/{todoId}/update/todolist', [ListTodoController::class, 'update']);
+    Route::get('/{todoId}/delete/todolist', [ListTodoController::class, 'delete']);
 });
 
-require __DIR__.'/auth.php';
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-/*Route::get('/todo', [TodoController::class, 'index']);
-Route::get('/create/todo', [TodoController::class, 'create']);
-Route::post('/store/todo', [TodoController::class, 'store']);
-Route::get('/show/todo/{id}', [TodoController::class, 'show']);
-Route::post('/update/todo/{id}', [TodoController::class, 'update']);
-Route::get('/delete/todo/{id}', [TodoController::class, 'delete']);*/
+require __DIR__ . '/auth.php';
 
 //admin page
 Route::resource('index-admin', AdminController::class);
 Route::put('editProfile/{id}', [AdminController::class, 'update'])->name('editProfile');
 Route::put('editPassword/{id}', [AdminController::class, 'changePassword'])->name('editPassword');
+
